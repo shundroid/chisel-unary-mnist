@@ -22,3 +22,24 @@ class uMUL(inWidth: Int) extends Module {
 
   io.oC := io.iA & (iBBuf > sobolSeq)
 }
+
+class uMUL_10 extends Module {
+  val inWidth = 10
+  val io = IO(new Bundle {
+    val iA = Input(Bool())
+    val iB = Input(UInt((inWidth-2).W))
+    val loadB = Input(Bool())
+    val oC = Output(Bool())
+  })
+
+  val iBBuf = RegInit(0.U((inWidth-2).W))
+  val rnd = Module(new SobolRNGDim1_10)
+  rnd.io.en := io.iA
+  rnd.io.threshold := iBBuf
+
+  when (io.loadB) {
+    iBBuf := io.iB
+  }
+
+  io.oC := io.iA & rnd.io.value
+}

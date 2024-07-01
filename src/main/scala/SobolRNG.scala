@@ -45,6 +45,7 @@ class LSZ(inWidth: Int) extends Module {
   // val outohInt = 
   inWidth match {
     case 3 => io.lszIdx := Mux(io.in(0), Mux(io.in(1), 2.U, 1.U), 0.U)
+    case 8 => io.lszIdx := Mux(io.in(0), Mux(io.in(1), Mux(io.in(2), Mux(io.in(3), Mux(io.in(4), Mux(io.in(5), Mux(io.in(6), 7.U, 6.U), 5.U), 4.U), 3.U), 2.U), 1.U), 0.U)
     case 10 => io.lszIdx := Mux(io.in(0), Mux(io.in(1), Mux(io.in(2), Mux(io.in(3), Mux(io.in(4), Mux(io.in(5), Mux(io.in(6), Mux(io.in(7), Mux(io.in(8), 9.U, 8.U), 7.U), 6.U), 5.U), 4.U), 3.U), 2.U), 1.U), 0.U)
   }
 }
@@ -69,6 +70,7 @@ class SobolRNGDim1(inWidth: Int) extends Module {
   sobolRNG.io.en := io.en
   inWidth match {
     case 3 => sobolRNG.io.dirVec := VecInit(Seq(4.U, 6.U, 7.U))
+    case 8 => sobolRNG.io.dirVec := VecInit(Seq(128.U, 64.U, 32.U, 16.U, 8.U, 4.U, 2.U, 1.U))
     case 10 => sobolRNG.io.dirVec := VecInit(Seq(512.U, 256.U, 128.U, 64.U, 32.U, 16.U, 8.U, 4.U, 2.U, 1.U))
     // case 4 => VecInit(Seq(8.U, 4.U, 2.U, 1.U))
   }
@@ -79,6 +81,23 @@ class SobolRNGDim1(inWidth: Int) extends Module {
   io.idx := lsz.io.lszIdx
 }
 
+class SobolRNGDim1_10 extends Module {
+  val width = 10
+  val io = IO(new Bundle {
+    val en = Input(Bool())
+    val threshold = Input(UInt((width-2).W))
+    val value = Output(Bool())
+  })
+  val cnt = RegInit(0.U(2.W))
+  when(io.en) {
+    cnt := cnt + 1.U
+  }
+  val active = Wire(Bool())
+  active := cnt === 3.U
+  val rng = Module(new SobolRNGDim1(width-2))
+  rng.io.en := active & io.en
+  io.value := Mux(active, rng.io.sobolSeq > io.threshold, 0.U)
+}
 // object Main extends App {
 //   println(
 //     ChiselStage.emitSystemVerilog(

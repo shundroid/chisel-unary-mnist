@@ -2,6 +2,7 @@
 //> using dep "org.chipsalliance::chisel:6.4.0"
 //> using plugin "org.chipsalliance:::chisel-plugin:6.4.0"
 //> using options "-unchecked", "-deprecation", "-language:reflectiveCalls", "-feature", "-Xcheckinit", "-Xfatal-warnings", "-Ywarn-dead-code", "-Ywarn-unused", "-Ymacro-annotations"
+package unary
 
 import chisel3._
 import chisel3.util._

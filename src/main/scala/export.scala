@@ -23,3 +23,14 @@ object ExportBaseline extends App {
     ).getBytes(StandardCharsets.UTF_8)
   )
 }
+
+object ExportMnistBaseline extends App {
+  val filePath = Paths.get("gen_mnist_baseline.sv")
+  Files.write(
+    filePath,
+    ChiselStage.emitSystemVerilog(
+      gen = new mnist.BaselineUnified("basic_tf_quant_2146.json"),
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    ).getBytes(StandardCharsets.UTF_8)
+  )
+}

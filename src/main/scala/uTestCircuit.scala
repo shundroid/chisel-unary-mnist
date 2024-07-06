@@ -16,10 +16,8 @@ class uTestCircuit extends Module {
   rng.io.threshold := (256-3).U
   val add1 = Module(new uSADD(2))
   add1.io.in := Cat(rng.io.value, mul1.io.oC)
-  val mul2 = Module(new uMUL(8))
+  val mul2 = Module(new uMUL_1_256)
   mul2.io.iA := add1.io.out
-  mul2.io.iB := 1.U
-  mul2.io.loadB := 1.B
   io.out := mul2.io.oC
 }
 

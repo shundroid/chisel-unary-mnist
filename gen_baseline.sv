@@ -6,6 +6,6 @@ module uBaseline(
   output [9:0] io_out
 );
 
-  assign io_out = {io_in[8:0] * 9'hC6, 1'h0};
+  assign io_out = {io_in[8:0] * 9'hC6 - 9'h100, 1'h0};
 endmodule
 

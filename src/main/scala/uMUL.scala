@@ -43,3 +43,17 @@ class uMUL_10 extends Module {
 
   io.oC := io.iA & rnd.io.value
 }
+
+class uMUL_1_256 extends Module {
+  val io = IO(new Bundle {
+    val iA = Input(Bool())
+    val oC = Output(Bool())
+  })
+
+  val cnt = RegInit(0.U(8.W))
+  when (io.iA) {
+    cnt := cnt + 1.U
+  }
+
+  io.oC := io.iA & (cnt === 255.U)
+}

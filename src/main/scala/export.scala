@@ -36,3 +36,14 @@ object ExportMnistBaseline extends App {
     ).getBytes(StandardCharsets.UTF_8)
   )
 }
+
+object ExportMnistUnary extends App {
+  val filePath = Paths.get("gen_mnist_unary.sv")
+  Files.write(
+    filePath,
+    ChiselStage.emitSystemVerilog(
+      gen = new mnist.UnaryWithInput("basic_tf_quant_2146.json", "test_image.json"),
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    ).getBytes(StandardCharsets.UTF_8)
+  )
+}

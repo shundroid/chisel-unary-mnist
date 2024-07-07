@@ -3,11 +3,13 @@ package unary
 import chisel3._
 import chisel3.util._
 
-class uMULBipolar(inWidth: Int) extends Module {
+class uMULBipolarLite(inWidth: Int) extends Module {
   val io = IO(new Bundle {
     val iA = Input(Bool())
     val iB = Input(SInt(inWidth.W))
     val loadB = Input(Bool())
+    val sobolSeqP = Input(SInt(inWidth.W))
+    val sobolSeqN = Input(SInt(inWidth.W))
     val oC = Output(Bool())
   })
 
@@ -16,13 +18,30 @@ class uMULBipolar(inWidth: Int) extends Module {
     iBBuf := io.iB
   }
 
+  io.oC := (io.iA & (iBBuf > io.sobolSeqP)) | (~io.iA & (iBBuf <= io.sobolSeqN))
+}
+
+class uMULBipolar(inWidth: Int) extends Module {
+  val io = IO(new Bundle {
+    val iA = Input(Bool())
+    val iB = Input(SInt(inWidth.W))
+    val loadB = Input(Bool())
+    val oC = Output(Bool())
+  })
+
   val rng1 = Module(new SobolRNGDim1(inWidth))
   rng1.io.en := io.iA
 
   val rng2 = Module(new SobolRNGDim1(inWidth))
   rng2.io.en := ~io.iA
 
-  io.oC := (io.iA & (iBBuf > rng1.io.sobolSeq.asSInt)) | (~io.iA & (iBBuf <= rng2.io.sobolSeq.asSInt))
+  val lite = Module(new uMULBipolarLite(inWidth))
+  lite.io.iA := io.iA
+  lite.io.iB := io.iB
+  lite.io.loadB := io.loadB
+  lite.io.sobolSeqP := rng1.io.sobolSeq.asSInt
+  lite.io.sobolSeqN := rng2.io.sobolSeq.asSInt
+  io.oC := lite.io.oC
 }
 
 // for testing

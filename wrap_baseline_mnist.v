@@ -2,7 +2,7 @@ module BaselineWrapper(
   input wire clock,
   input wire reset,
   input wire [2047:0] io_in,
-  output wire [9:0] io_out
+  output wire [339:0] io_out
 );
   BaselineUnified c(
     .clock(clock),

@@ -152,7 +152,9 @@
   ],
   "b2q": [-397, -517, 518, 202, 209, 630, 211, 71, 475, -176],
   "shift": 12,
-  "max_width_1": 19,
-  "max_width_2": 14,
+  "b1_width": 12,
+  "b2_width": 10,
+  "hidden_width": 22,
+  "output_width": 34,
   "hidden_dim": 8
 }

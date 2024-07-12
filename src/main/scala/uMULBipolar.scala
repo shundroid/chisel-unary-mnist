@@ -3,6 +3,16 @@ package unary
 import chisel3._
 import chisel3.util._
 
+class uMULBipolarSuperLite extends Module {
+  val io = IO(new Bundle {
+    val i = Input(Bool())
+    val p = Input(Bool())
+    val n = Input(Bool())
+    val o = Output(Bool())
+  })
+  io.o := (io.i & io.p) | (~io.i & ~io.n)
+}
+
 class uMULBipolarLite(inWidth: Int) extends Module {
   val io = IO(new Bundle {
     val iA = Input(Bool())
@@ -18,7 +28,7 @@ class uMULBipolarLite(inWidth: Int) extends Module {
     iBBuf := io.iB
   }
 
-  io.oC := (io.iA & (iBBuf > io.sobolSeqP)) | (~io.iA & (iBBuf <= io.sobolSeqN))
+  io.oC := (io.iA & (io.iB > io.sobolSeqP)) | (~io.iA & (io.iB <= io.sobolSeqN))
 }
 
 class uMULBipolar(inWidth: Int) extends Module {

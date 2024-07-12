@@ -9,10 +9,54 @@
 
 using json = nlohmann::json;
 
+#include <iostream>
+#include <verilated.h>
+#include "Vgen_mnist_unary_with_input_unified.h"
+
+#include <array>
+#include <list>
+#include <fstream>
+#include "json.hpp"
+#include <algorithm>
+
+using json = nlohmann::json;
+
+void set_char(VlWide<64> &io_in, int index, char data) {
+  unsigned long val = (unsigned long)io_in[index / 4];
+  val = val & ~(0xff << (index % 4) * 8);
+  val = val | (((unsigned long)(data & 0xff)) << (index % 4) * 8);
+  io_in[index / 4] = val;
+}
+
+signed long long get_prediction(VlWide<11> &io_out, int index) {
+  const int output_width = 34;
+  int bit_start = index * output_width;
+  int bit_end = bit_start + output_width - 1;
+  if (bit_end / 32 == bit_start / 32) {
+    // won't happen if output_width > 32
+    return (((unsigned long long)io_out[bit_start / 32]) >> (bit_start % 32)) & ((1ull << output_width) - 1);
+  } else {
+    unsigned long long result = ((unsigned long long)io_out[bit_start / 32]) >> (bit_start % 32);
+    result &= (1ull << (32 - (bit_start % 32))) - 1;
+    result |= ((unsigned long long)io_out[bit_end / 32]) << (32 - (bit_start % 32));
+    result &= ((1ull << output_width) - 1);
+    // sign extension
+    if (result & (1ull << (output_width - 1))) {
+      result |= ~((1ull << output_width) - 1);
+    }
+    return result;
+  }
+}
+
 int main(int argc, char **argv) {
   Verilated::commandArgs(argc, argv);
 
-  Vgen_mnist_unary *dut = new Vgen_mnist_unary();
+  std::ifstream f("test_images.json");
+  json data = json::parse(f)[0];
+  Vgen_mnist_unary_with_input_unified *dut = new Vgen_mnist_unary_with_input_unified();
+  for (int i = 0; i < 256; i++) {
+    set_char(dut->io_in, i, data["image"][i].template get<char>());
+  }
 
   dut->clock = 0;
   dut->reset = 1;
@@ -33,27 +77,20 @@ int main(int argc, char **argv) {
     dut->eval();
     dut->clock = 1;
     dut->eval();
-    lists[0].push_back(dut->io_out_0);
-    lists[1].push_back(dut->io_out_1);
-    lists[2].push_back(dut->io_out_2);
-    lists[3].push_back(dut->io_out_3);
-    lists[4].push_back(dut->io_out_4);
-    lists[5].push_back(dut->io_out_5);
-    lists[6].push_back(dut->io_out_6);
-    lists[7].push_back(dut->io_out_7);
-    lists[8].push_back(dut->io_out_8);
-    lists[9].push_back(dut->io_out_9);
+    for (int j = 0; j < 10; j++) {
+      lists[j].push_back((dut->io_out >> j) & 1);
+    }
   }
 
   dut->final();
 
   // export lists as json
-  json data;
+  json out_data;
   for (int i = 0; i < 10; i++) {
-    data["out"][i] = lists[i];
+    out_data["out"][i] = lists[i];
   }
   // save to a file
   std::ofstream o("unary_tb.json");
-  o << std::setw(4) << data << std::endl;
+  o << std::setw(4) << out_data << std::endl;
 
 }

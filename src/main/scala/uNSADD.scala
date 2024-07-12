@@ -3,7 +3,7 @@ package unary
 import chisel3._
 import chisel3.util._
 
-class uNSADD(n: Int, l: Int, bipolar: Boolean) extends Module {
+class uNSADD(n: Int, l: Int, bipolar: Boolean, extraGeta: Int = 0) extends Module {
   val io = IO(new Bundle {
     val in = Input(Vec(n, Bool()))
     val out = Output(Bool())
@@ -21,14 +21,16 @@ class uNSADD(n: Int, l: Int, bipolar: Boolean) extends Module {
   }
   parallelCounter := parallelCounterPartial(n-1)
 
-  val theoreticalAcc = RegInit(0.S((l*log2Up(n)+2).W))
+  val accWidth = l*log2Up(n)+2+4
+  val theoreticalAcc = RegInit(0.S(accWidth.W))
   val offset = if (bipolar) n - 1 else 0
   theoreticalAcc := theoreticalAcc + (parallelCounter.zext << 1.U) - offset.S
 
-  val actualAcc = RegInit(0.S((l*log2Up(n)+2).W))
-  actualAcc := actualAcc + (io.out.zext << 1.U)
+  val geta = 1 + extraGeta
+  val actualAcc = RegInit(0.S((accWidth-geta).W))
+  actualAcc := actualAcc + io.out.zext
 
-  io.out := theoreticalAcc > actualAcc
+  io.out := theoreticalAcc(accWidth-1, geta).asSInt > actualAcc
 
   io.theoreticalAcc := theoreticalAcc
   io.actualAcc := actualAcc

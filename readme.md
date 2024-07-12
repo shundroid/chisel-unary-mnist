@@ -2,6 +2,12 @@
 
 Unary Computing で MNIST を計算する NN を実装しました。
 
+## 準備
+
+scala と chisel, verilator が必要です。
+
+Scala 3.4.2, Chisel 6.2.0, Verilator 5.026 で検証しています。
+
 ## 実行(verilator)
 
 `src/main/scala/export.scala` の `ExportMnistUnaryWithInputUnified` object を実行してください。

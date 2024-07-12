@@ -11,7 +11,6 @@ class TemporalRNG(width: Int, bipolar: Boolean) extends Module {
   })
   if (bipolar) {
     val counter = RegInit((-(1 << (width - 1))).S(width.W))
-    // val counterNext = RegNext(counter)
     when(io.en) {
       counter := counter + 1.S;
     }

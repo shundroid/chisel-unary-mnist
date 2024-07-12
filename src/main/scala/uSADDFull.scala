@@ -1,12 +1,7 @@
-//> using scala "2.13.12"
-//> using dep "org.chipsalliance::chisel:6.4.0"
-//> using plugin "org.chipsalliance:::chisel-plugin:6.4.0"
-//> using options "-unchecked", "-deprecation", "-language:reflectiveCalls", "-feature", "-Xcheckinit", "-Xfatal-warnings", "-Ywarn-dead-code", "-Ywarn-unused", "-Ymacro-annotations"
 package unary
 
 import chisel3._
 import chisel3.util._
-import _root_.circt.stage.ChiselStage
 
 class uSADDFull(inWidth: Int) extends Module {
   val io = IO(new Bundle {
@@ -35,12 +30,3 @@ class uSADDFull(inWidth: Int) extends Module {
   sadd.io.in := vec.asUInt
   io.oC := sadd.io.out
 }
-
-// object Main extends App {
-//   println(
-//     ChiselStage.emitSystemVerilog(
-//       gen = new uSADDFull(3),
-//       firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
-//     )
-//   )
-// }

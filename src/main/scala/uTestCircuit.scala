@@ -38,15 +38,3 @@ class uTestCircuitRepeat(repeat: Int) extends Module {
   }
   io.out := wires(repeat)
 }
-
-// class uTestCircuitFull extends Module {
-//   val width = 3
-//   val io = IO(new Bundle {
-//     val out = Output(Bool())
-//   })
-//   val rng = Module(new SobolRNGDim1(width))
-//   rng.io.en := 1.B
-//   val c = Module(new uTestCircuit(width))
-//   c.io.in := 6.U > rng.io.sobolSeq
-//   io.out := c.io.out
-// }

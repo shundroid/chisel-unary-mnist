@@ -30,8 +30,8 @@ class uRelu(inWidth: Int) extends Module {
   val blink = RegInit(0.B)
   blink := ~blink
 
-  // io.o := Mux(overHalf, io.i, Mux(balance(inWidth - 1), 0.B, 1.B))
-  io.o := Mux(overHalf, io.i, blink)
+  io.o := Mux(overHalf, io.i, Mux(balance(inWidth - 1), 0.B, 1.B))
+  // io.o := Mux(overHalf, io.i, blink)
   io.overhalf := overHalf
 }
 

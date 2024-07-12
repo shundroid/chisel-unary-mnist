@@ -7,7 +7,7 @@ import org.scalatest.matchers.must.Matchers
 
 class BalancerSpec extends AnyFreeSpec with Matchers {
   def runTestPattern(genA: Int => Boolean, genB: Int => Boolean, len: Int = 12): Unit = {
-    simulate(new balancer) { dut =>
+    simulate(new Balancer) { dut =>
       dut.reset.poke(true.B)
       dut.clock.step()
       dut.reset.poke(false.B)

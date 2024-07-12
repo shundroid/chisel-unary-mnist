@@ -37,17 +37,10 @@ class uReluSpec extends AnyFreeSpec with Matchers {
       dut.reset.poke(true.B)
       dut.clock.step()
       dut.reset.poke(false.B)
-        println(s"v: ${dut.io.o.peek().litValue.toInt}, cnt: ${dut.io.rngOut.peek().litValue.toInt}")
-      // dut.clock.step()
-
-      // dut.clock.step()
 
       var acc = 0
-      println("start")
       for (i <- 0 until iter) {
         acc += dut.io.o.peek().litValue.toInt
-        // println(s"v: ${dut.io.o.peek().litValue.toInt}")
-        // println(s"overhalf: ${dut.io.overhalf.peek().litValue}")
         dut.clock.step()
       }
 

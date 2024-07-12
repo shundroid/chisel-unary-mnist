@@ -14,18 +14,3 @@ class uBaseline extends Module {
   test := test2
   test2 := test
 }
-
-// class uBaselineRepeat(repeat: Int) extends Module {
-//   val io = IO(new Bundle {
-//     val in = Input(UInt(3.W))
-//     val out = Output(UInt(3.W))
-//   })
-//   val wires = Wire(Vec(repeat + 1, UInt(3.W)))
-//   wires(0) := io.in
-//   for (i <- 0 until repeat) {
-//     val baseline = Module(new uBaseline)
-//     baseline.io.in := wires(i)
-//     wires(i + 1) := baseline.io.out
-//   }
-//   io.out := wires(repeat)
-// }

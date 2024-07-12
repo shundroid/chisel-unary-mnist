@@ -48,23 +48,23 @@ object ExportMnistBaseline extends App {
 //   )
 // }
 
-// object ExportMnistUnaryUnified extends App {
-//   val filePath = Paths.get("gen_mnist_unary_unified.sv")
-//   Files.write(
-//     filePath,
-//     ChiselStage.emitSystemVerilog(
-//       gen = new mnist.UnaryUnified("basic_tf_quant_2146.json"),
-//       firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
-//     ).getBytes(StandardCharsets.UTF_8)
-//   )
-// }
+object ExportMnistUnaryUnified extends App {
+  val filePath = Paths.get("gen_mnist_unary_unified.sv")
+  Files.write(
+    filePath,
+    ChiselStage.emitSystemVerilog(
+      gen = new mnist.UnaryUnified("basic_tf_quant_2146.json", false),
+      firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
+    ).getBytes(StandardCharsets.UTF_8)
+  )
+}
 
 object ExportMnistUnaryWithInputUnified extends App {
   val filePath = Paths.get("gen_mnist_unary_with_input_unified.sv")
   Files.write(
     filePath,
     ChiselStage.emitSystemVerilog(
-      gen = new mnist.UnaryWithInputUnified("basic_tf_quant_2146.json", false),
+      gen = new mnist.UnaryWithInputUnified("basic_tf_quant_2146.json", true),
       firtoolOpts = Array("-disable-all-randomization", "-strip-debug-info")
     ).getBytes(StandardCharsets.UTF_8)
   )

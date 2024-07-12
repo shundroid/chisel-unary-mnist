@@ -15,12 +15,7 @@ class uMULBipolarSpec extends AnyFreeSpec with Matchers {
 
       dut.io.iA.poke(a.S)
       dut.io.iB.poke(b.S)
-      dut.io.loadA.poke(true.B)
-      dut.io.loadB.poke(true.B)
       dut.clock.step()
-
-      dut.io.loadA.poke(false.B)
-      dut.io.loadB.poke(false.B)
 
       var acc = 0
       for (i <- 0 until iter) {
